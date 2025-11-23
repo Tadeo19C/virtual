@@ -1,69 +1,54 @@
-# 📞 Virtual PBX with Asterisk & Docker Swarm
+# 📞 PBX Virtual con Asterisk y Docker Swarm
 
-![Asterisk](https://img.shields.io/badge/Asterisk-20.x-orange?style=for-the-badge&logo=asterisk&logoColor=white)
-![Docker Swarm](https://img.shields.io/badge/Docker_Swarm-Mode-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Status](https://img.shields.io/badge/Status-Operational-success?style=for-the-badge)
-![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
-
-> **A lightweight, scalable, and containerized VoIP solution deployed on Docker Swarm.**
-> *Ready for internal communication, testing, and learning purposes.*
+> **Una solución VoIP ligera, escalable y contenerizada desplegada en Docker Swarm.**
+> *Lista para comunicación interna, pruebas y fines educativos.*
 
 ---
 
-## 🚀 Project Overview
+## 🚀 Descripción del Proyecto
 
-This project virtualizes a **Private Branch Exchange (PBX)** using **Asterisk** running on **Alpine Linux**. It leverages **Docker Swarm** for orchestration, ensuring high availability and easy management.
+Este proyecto virtualiza una **Central Telefónica Privada (PBX)** utilizando **Asterisk** ejecutándose sobre **Alpine Linux**. Aprovecha **Docker Swarm** para la orquestación, asegurando alta disponibilidad y una gestión sencilla.
 
-### 🎯 Key Features
-*   **🐳 Containerized:** Runs on a minimal `mlan/asterisk:mini` image.
-*   **🕸️ Swarm Ready:** Configured for Docker Swarm with specific port handling.
-*   **🔒 Secure Auth:** PJSIP configuration with strong credentials.
-*   **🔊 Clear Audio:** Optimized RTP port ranges to avoid NAT issues.
-*   **💾 Persistent:** Data and configuration persistence via Bind Mounts & Volumes.
+### 🎯 Características Clave
+*   **🐳 Contenerizado:** Ejecuta en una imagen mínima `mlan/asterisk:mini`.
+*   **🕸️ Listo para Swarm:** Configurado para Docker Swarm con manejo específico de puertos.
+*   **🔒 Autenticación Segura:** Configuración PJSIP con credenciales robustas.
+*   **🔊 Audio Claro:** Rangos de puertos RTP optimizados para evitar problemas de NAT.
+*   **💾 Persistente:** Persistencia de datos y configuración mediante Bind Mounts y Volúmenes.
 
 ---
 
-## 🛠️ Architecture
+## 🛠️ Arquitectura
 
-```mermaid
-graph TD
-    User[📱 Softphone Users] -->|SIP 5060/UDP| Host[🐧 Linux Host IP]
-    Host -->|Bind Mount| Config[📂 ./config]
-    Host -->|Volume| Data[💾 asterisk_data]
-    Host -->|Port Mapping| Container[📦 Asterisk Container]
-    
-    subgraph Docker Swarm
-        Container
-    end
-```
+El sistema conecta usuarios de Softphones (Zoiper, MicroSIP) al Host Linux a través de SIP (puerto 5060) y RTP (puertos 10000-10999).
 
-| Component | Specification |
+| Componente | Especificación |
 | :--- | :--- |
-| **Base Image** | `mlan/asterisk:mini` |
-| **Signaling** | SIP over UDP (Port 5060) |
-| **Media (RTP)** | UDP Ports 10000-10999 |
-| **Driver** | PJSIP (Modern Channel Driver) |
+| **Imagen Base** | `mlan/asterisk:mini` |
+| **Señalización** | SIP sobre UDP (Puerto 5060) |
+| **Medios (RTP)** | UDP Puertos 10000-10999 |
+| **Driver** | PJSIP (Driver de Canal Moderno) |
 
 ---
 
-## 📥 Installation & Deployment
+## 📥 Instalación y Despliegue
 
-### 1. Prerequisites
-*   Linux Server (Ubuntu/Debian recommended)
-*   Docker Engine installed
-*   Docker Swarm initialized (`docker swarm init`)
+### 1. Prerrequisitos
+*   Servidor Linux (Ubuntu/Debian recomendado)
+*   Docker Engine instalado
+*   Docker Swarm inicializado (`docker swarm init`)
 
-### 2. Clone & Deploy
+### 2. Clonar y Desplegar
 ```bash
-# Clone the repository
-git clone <YOUR_REPO_URL>
+# Clonar el repositorio
+git clone <URL_DE_TU_REPO>
 cd virtual
 
-# Deploy the stack
+# Desplegar el stack
 docker stack deploy -c docker-compose.yml pbx
 ```
 
-### 3. Verify Status
+### 3. Verificar Estado
 ```bash
 docker service ls
 docker service logs -f pbx_asterisk
@@ -71,47 +56,47 @@ docker service logs -f pbx_asterisk
 
 ---
 
-## ⚙️ Configuration
+## ⚙️ Configuración
 
-### 📞 Extensions
-The system comes pre-configured with two internal extensions:
+### 📞 Extensiones
+El sistema viene preconfigurado con dos extensiones internas:
 
-| Extension | Username | Password | Context |
+| Extensión | Usuario | Contraseña | Contexto |
 | :--- | :--- | :--- | :--- |
 | **100** | `100` | `MiClaveSegura123` | `[internas]` |
 | **101** | `101` | `MiClaveSegura123` | `[internas]` |
 
-> **Note:** Configure your Softphone (Zoiper, MicroSIP) with **UDP Transport**.
+> **Nota:** Configura tu Softphone (Zoiper, MicroSIP) con **Transporte UDP**.
 
-### 🔧 Key Files
-*   `docker-compose.yml`: Stack definition.
-*   `config/pjsip.conf`: SIP endpoints and transport settings.
-*   `config/extensions.conf`: Dialplan logic.
-
----
-
-## 🧪 Testing
-
-1.  **Connect User 100** on your PC.
-2.  **Connect User 101** on your Smartphone.
-3.  **Dial 101** from your PC.
-4.  Enjoy crystal clear audio! 🎧
+### 🔧 Archivos Clave
+*   `docker-compose.yml`: Definición del Stack.
+*   `config/pjsip.conf`: Configuración de endpoints SIP y transporte.
+*   `config/extensions.conf`: Lógica del plan de marcado (Dialplan).
 
 ---
 
-## 🆘 Troubleshooting
+## 🧪 Pruebas
 
-| Issue | Solution |
+1.  **Conecta el Usuario 100** en tu PC.
+2.  **Conecta el Usuario 101** en tu Celular.
+3.  **Marca 101** desde tu PC.
+4.  ¡Disfruta de un audio nítido! 🎧
+
+---
+
+## 🆘 Solución de Problemas (Troubleshooting)
+
+| Problema | Solución |
 | :--- | :--- |
-| **Registration Failed (401)** | Check password (`MiClaveSegura123`) and username. |
-| **No Audio / One-way Audio** | Ensure `external_media_address` in `pjsip.conf` matches your Host IP. |
-| **Service Stuck** | Run `docker service update --force pbx_asterisk` to restart. |
+| **Fallo de Registro (401)** | Verifica la contraseña (`MiClaveSegura123`) y el usuario. |
+| **Sin Audio / Audio en un sentido** | Asegúrate de que `external_media_address` en `pjsip.conf` coincida con la IP de tu Host. |
+| **Servicio Atascado** | Ejecuta `docker service update --force pbx_asterisk` para reiniciar. |
 
 ---
 
-## 📜 License
-This project is open-source and available under the MIT License.
+## 📜 Licencia
+Este proyecto es de código abierto y está disponible bajo la Licencia MIT.
 
 ---
-*Made with ❤️ by Tadeo & Copilot*
+*Hecho con ❤️ por Tadeo y Copilot*
 
