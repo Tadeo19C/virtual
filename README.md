@@ -114,6 +114,4 @@ El sistema viene preconfigurado con dos extensiones internas:
 ## 📜 Licencia
 Este proyecto es de código abierto y está disponible bajo la Licencia MIT.
 
----
-*Hecho con ❤️ por Tadeo y Copilot*
 
