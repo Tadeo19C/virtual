@@ -1,0 +1,34 @@
+version: '3.7'
+services:
+  asterisk:
+    image: mlan/asterisk:mini
+    container_name: pbx_asterisk_dev
+    ports:
+      # Puerto SIP para señalización (modo host)
+      - target: 5060
+        published: 5060
+        protocol: udp
+        mode: host
+      # Rango RTP (1000 puertos) para el audio de las llamadas
+      - "10000-10999:10000-10999/udp"
+    volumes:
+      # Persistencia de la Configuración (Para Respaldo y Modificación Local)
+      - type: bind
+        source: /home/tadeo/Documents/virtual/config
+        target: /etc/asterisk
+      # Persistencia de Datos, Voicemail y Grabaciones
+      - asterisk_data:/var/lib/asterisk
+    restart: unless-stopped
+
+    # === CONFIGURACIÓN PARA DOCKER SWARM ===
+    deploy:
+      replicas: 1
+      placement:
+        # Ejecutar solo en el nodo Manager, ya que la PBX no se escala fácilmente
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+
+volumes:
+  asterisk_data:
