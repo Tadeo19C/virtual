@@ -1,5 +1,10 @@
 # 📞 PBX Virtual con Asterisk y Docker Swarm
 
+![Asterisk](https://img.shields.io/badge/Asterisk-20.x-orange?style=for-the-badge&logo=asterisk&logoColor=white)
+![Docker Swarm](https://img.shields.io/badge/Docker_Swarm-Mode-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Status](https://img.shields.io/badge/Estado-Operativo-success?style=for-the-badge)
+![License](https://img.shields.io/badge/Licencia-MIT-yellow?style=for-the-badge)
+
 > **Una solución VoIP ligera, escalable y contenerizada desplegada en Docker Swarm.**
 > *Lista para comunicación interna, pruebas y fines educativos.*
 
@@ -19,6 +24,18 @@ Este proyecto virtualiza una **Central Telefónica Privada (PBX)** utilizando **
 ---
 
 ## 🛠️ Arquitectura
+
+```mermaid
+graph TD
+    User[📱 Usuarios Softphone] -->|SIP 5060/UDP| Host[🐧 Host Linux IP]
+    Host -->|Bind Mount| Config[📂 ./config]
+    Host -->|Volumen| Data[💾 asterisk_data]
+    Host -->|Mapeo de Puertos| Container[📦 Contenedor Asterisk]
+    
+    subgraph Docker Swarm
+        Container
+    end
+```
 
 El sistema conecta usuarios de Softphones (Zoiper, MicroSIP) al Host Linux a través de SIP (puerto 5060) y RTP (puertos 10000-10999).
 
